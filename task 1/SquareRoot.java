@@ -21,7 +21,7 @@ public class SquareRoot {
     }
 
     public static void main(String[] args) {
-        int x = 17;
+        int x = 10;
         System.out.println("Square root of " + x + " is: " + mySqrt(x));
     }
 }
