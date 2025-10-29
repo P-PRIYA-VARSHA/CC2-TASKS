@@ -1,0 +1,63 @@
+import java.util.*;
+
+class DataPacketTransmissionOptimizer {
+    static class Packet {
+        int size, priority;
+        double ratio;
+
+        Packet(int size, int priority) {
+            this.size = size;
+            this.priority = priority;
+            this.ratio = (double) priority / size;
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of packets: ");
+        int n = sc.nextInt();
+
+        int[] size = new int[n];
+        int[] priority = new int[n];
+
+        System.out.println("\nEnter size and priority of each packet:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("Packet " + (i + 1) + " (size priority): ");
+            size[i] = sc.nextInt();
+            priority[i] = sc.nextInt();
+        }
+
+        System.out.print("\nEnter total bandwidth limit: ");
+        int B = sc.nextInt();
+
+        List<Packet> packets = new ArrayList<>();
+        for (int i = 0; i < n; i++)
+            packets.add(new Packet(size[i], priority[i]));
+
+        packets.sort((a, b) -> Double.compare(b.ratio, a.ratio));
+
+        double totalPriority = 0.0;
+        int usedBandwidth = 0;
+
+        System.out.println("\nSelected Packets for Transmission:");
+        for (Packet p : packets) {
+            if (usedBandwidth + p.size <= B) {
+                usedBandwidth += p.size;
+                totalPriority += p.priority;
+                System.out.println("Packet(size=" + p.size + ", priority=" + p.priority + ")");
+            } else {
+                int remaining = B - usedBandwidth;
+                if (remaining > 0) {
+                    totalPriority += p.ratio * remaining;
+                    System.out.println("Packet(size=" + p.size + ", priority=" + p.priority + ") - partially sent");
+                    usedBandwidth = B;
+                }
+                break;
+            }
+        }
+
+        System.out.println("\nTotal bandwidth used: " + usedBandwidth);
+        System.out.println("Maximum total priority achieved: " + totalPriority);
+    }
+}
